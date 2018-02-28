@@ -1,0 +1,56 @@
+Tables:
+	dbo.mdl_enrolments_ARCH
+	
+Views:
+	dbo.mdl_courses
+	dbo.mdl_enrolments
+
+Scalar-valued Functions:
+	dbo.mdl_academic_period
+	dbo.mdl_category
+	
+	
+	
+Procedure:
+		
+1) Set Moodle to "Keep user enroled" on the external database enrolment plugin properties page
+
+2) Create static table at end of semester named:  dbo.mdl_enrolments_PREVIOUSTERMCODE (ie. dbo.mdl_enrolments_201420)
+		
+		CREATE TABLE [dbo].[mdl_enrolments_PREVIOUSTERMCODE]
+		(
+			[idnumber] [varchar](255) NULL,
+			[courseid] [varchar](100) NULL,
+			[role] [varchar](100) NULL
+		)
+		
+3) Populate the new table with the current data from mdl_enrolments
+	
+		INSERT INTO dbo.mdl_enrolments_PREVIOUSTERMCODE
+			SELECT * FROM mdl_enrolments 
+				WHERE courseid LIKE '%-MOODLE CATEGORY' 
+				(MOODLE CATEGORY should be the same as dbo.mdl_category)
+				
+4) Change mdl_enrolments to union the new static table
+
+5) Change the Scalar functions to the current term and category
+
+6) If you want to create the courses immediately, run the following command via ssh on the moodle server
+   or you can wait for the cron script to run overnight:
+		
+		php /var/www/html/moodle/enrol/database/cli/sync.php
+	
+7) If everything looks good, change the "Keep user enroled" option back to "Disable course enrolment" 
+   during drop/add
+
+8) Change the setting back to "Keep user enroled" after extended drop; ask DeAnna what that date is.
+
+********NOTE:  
+This file is in two places; make sure to update both places:  
+
+\\forms\banner\Rhodes_source\moodle_inegration 
+
+and 
+
+/var/www/html/moodle on the Moodle server
+

@@ -1,0 +1,116 @@
+
+
+Don't forget to grant select on moodle.* to 'moodle'@'DM-2012.rhodes.edu' identified by 'THEUSUALPASS';
+
+Create a file called .smbcon in the home directory for the moodle user (/home/moodle/.smbcon)
+username=moodlenoreply
+password=
+domain=RHODES
+
+
+
+
+edit /etc/fstab and add the following line:
+
+//10.10.2.193/RhodesDirectory /var/www/html/moodle/mdlusrimg cifs credentials=/home/moodle/.smbcon,iocharset=utf8,file_mode=0655,dir_mode=0655 1 3
+
+
+
+
+In the file "/var/www/html/moodle/lib/outputrenderers.php" at about line #2124 replace the $src variable with:
+
+Delivered version of line:  $src = $userpicture->get_url($this->page, $this);
+
+$rptsurl='http://moodle.rhodes.edu/mdlusrimg/images/';
+$src= $rptsurl . substr($user->firstname,0,1) . $user->lastname . substr($user->idnumber,-3) . '.jpg';
+
+Added variable $rsize in two locations above line $2124.  First value is 46, second value is 156.  Also changed $size value in "else if" statement from 100 to 125.
+
+
+ if (empty($userpicture->size)) {
+            $size = 35;
+            $rsize = 46;
+        } else if ($userpicture->size === true or $userpicture->size == 1) {
+            $size = 125;
+            $rsize = 156;
+        } else {
+            $size = $userpicture->size;
+	    $rsize = $userpicture->size;
+        }
+
+
+Changed the $attributes value for 'height' to $rsize
+
+$attributes = array('src'=>$src, 'alt'=>$alt, 'title'=>$alt, 'class'=>$class, 'width'=>$size, 'height'=>$rsize);
+
+
+
+
+
+In the file "/var/www/html/moodle/lib/outputcompenents.php" at about line #137:
+
+Add the element 'idnumber' to the array called '$fields' under the function user_picture
+
+	protected static $fields = array('id', 'picture', 'firstname', 'lastname', 'imagealt', 'email', 'idnumber');
+
+>>>>DON'T NEED THE FOLLOWING ANYMORE ... we use OneLogin ....
+
+Added the following lines at line 123 to /var/www/html/moodle/login/index.php to handle @rhodes.edu and RHODES\
+It's in the  "/// Check if the user has actually submitted login data to us" section
+
+    123 /// ADDED BY DOUG 7.28.2016 -- to strip out '@rhodes.edu' and 'RHODES\' *************************************
+    124
+    125    if (strpos($frm->username, '@rhodes.edu') !==false) {
+    126        $frm->username = str_replace('@rhodes.edu', '', $frm->username);
+    127     }
+    128
+    129    if (substr($frm->username,0,6) == 'RHODES') {
+    130        $frm->username = str_replace('RHODES','',$frm->username);
+    131        $frm->username = stripslashes($frm->username);
+    132     }
+    133
+    134 /// END DOUG ADDITIONS **************************************************************************************
+
+make sure to copy the CSS directory from the backup that you created before upgrading:  /var/www/html/moodle/css
+
+
+updates in css files at css/new.css and themes/magazine/core.css to point to moodle instead of M2 (just in case)
+
+
+Create symbolic link for the mod directory to get images
+]# ln -sf /var/www/html/moodle/mdlusrimg /var/www/html/moodle/mod/mdlusrimg
+
+
+********NOTE:  
+This file is in two places; make sure to update both places:  
+
+\\forms\banner\Rhodes_source\moodle_inegration 
+
+and 
+
+/var/www/html/moodle on the Moodle server
+
+set MAX_INPUT_VARS to 20000 in php.ini
+
+********BEGIN PARAHAM NOTES
+
+ADDED MODULES/BLOCKS TO M2 TEST SERVER
+
+(paraham-06232014) Added Advanced Forum Module for testing by Jonathan Fitzgerald. Plan to add it to production after testing. Installer is in Moodle_Installers in this directory.
+(paraham-06102014) Added McGraw-Hill Campus block for Felix Kronenberg to integrate MH's Connect software with Moodle.
+
+
+EXISTING INTEGRATIONS/ADDITIONS ON MOODLE PRODUCTION SERVER
+
+If a new installation is done, the latest versions of these will need to be installed:
+
+Skype 
+Turnitin
+Attendance
+NanoGong
+Advanced Forum
+McGraw-Hill Campus
+
+
+
+********END PARAHAM NOTES

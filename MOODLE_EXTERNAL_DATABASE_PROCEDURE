@@ -46,11 +46,8 @@ Procedure:
 8) Change the setting back to "Keep user enroled" after extended drop; ask DeAnna what that date is.
 
 ********NOTE:  
-This file is in two places; make sure to update both places:  
+This file is also located at the following location on the Moodle server; make sure to update both Github and Moodle:  
 
-\\forms\banner\Rhodes_source\moodle_inegration 
 
-and 
-
-/var/www/html/moodle on the Moodle server
+/var/www/html/moodle
 

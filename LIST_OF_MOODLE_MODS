@@ -81,18 +81,9 @@ Create symbolic link for the mod directory to get images
 ]# ln -sf /var/www/html/moodle/mdlusrimg /var/www/html/moodle/mod/mdlusrimg
 
 
-********NOTE:  
-This file is in two places; make sure to update both places:  
-
-\\forms\banner\Rhodes_source\moodle_inegration 
-
-and 
-
-/var/www/html/moodle on the Moodle server
 
 set MAX_INPUT_VARS to 20000 in php.ini
 
-********BEGIN PARAHAM NOTES
 
 ADDED MODULES/BLOCKS TO M2 TEST SERVER
 
@@ -113,4 +104,10 @@ McGraw-Hill Campus
 
 
 
-********END PARAHAM NOTES
+********NOTE:  
+
+This file is also located at the following location on the Moodle server; make sure to update both Github and Moodle:  
+
+/var/www/html/moodle
+
+

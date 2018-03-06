@@ -71,6 +71,8 @@ It's in the  "/// Check if the user has actually submitted login data to us" sec
     133
     134 /// END DOUG ADDITIONS **************************************************************************************
 
+>>>>
+
 make sure to copy the CSS directory from the backup that you created before upgrading:  /var/www/html/moodle/css
 
 
@@ -81,6 +83,7 @@ Create symbolic link for the mod directory to get images
 ]# ln -sf /var/www/html/moodle/mdlusrimg /var/www/html/moodle/mod/mdlusrimg
 
 
+Make sure to copy the SAML stuff from the auth dir
 
 set MAX_INPUT_VARS to 20000 in php.ini
 
